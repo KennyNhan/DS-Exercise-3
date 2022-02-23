@@ -96,7 +96,10 @@ garden_harvest %>%
 ```{r}
 garden_harvest %>% 
   group_by(vegetable, variety) %>% 
-  summarize(tot_harvest = sum(weight)/454)
+  summarize(tot_harvest = sum(weight)/454) %>% 
+  right_join(garden_planting, by = c("tot_harvest","plot"))
+
+
 ```
 
   3. I would like to understand how much money I "saved" by gardening, for each vegetable type. Describe how I could use the `garden_harvest` and `garden_spending` datasets, along with data from somewhere like [this](https://products.wholefoodsmarket.com/search?sort=relevance&store=10542) to answer this question. You can answer this in words, referencing various join functions. You don't need R code but could provide some if it's helpful.
@@ -110,7 +113,9 @@ garden_harvest %>%
   5. In the `garden_harvest` data, create two new variables: one that makes the varieties lowercase and another that finds the length of the variety name. Arrange the data by vegetable and length of variety name (smallest to largest), with one row for each vegetable variety. HINT: use `str_to_lower()`, `str_length()`, and `distinct()`.
   
 ```{r}
-
+garden_harvest %>% 
+  mutate(lowercase = str_to_lower(variety), name_length = str_length(variety)) %>% 
+  fct_reorder(distinct(name_length))
 ```
 
   6. In the `garden_harvest` data, find all distinct vegetable varieties that have "er" or "ar" in their name. HINT: `str_detect()` with an "or" statement (use the | for "or") and `distinct()`.
