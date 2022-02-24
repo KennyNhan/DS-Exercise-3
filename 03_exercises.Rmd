@@ -107,7 +107,13 @@ garden_harvest %>%
   4. Subset the data to tomatoes. Reorder the tomato varieties from smallest to largest first harvest date. Create a barplot of total harvest in pounds for each variety, in the new order.CHALLENGE: add the date near the end of the bar. (This is probably not a super useful graph because it's difficult to read. This is more an exercise in using some of the functions you just learned.)
 
 ```{r}
-
+garden_harvest %>% 
+  filter(vegetable == "tomatoes") %>% 
+  group_by(variety) %>% 
+  summarize(tot_harvest = sum(weight)/454) %>% 
+  ggplot(aes(x = tot_harvest, y = fct_reorder(variety, tot_harvest, .desc = TRUE))) +
+  labs(y = "Variety", x = "Total Harvest (lbs)", title = "Total Tomato Harvest") +
+  geom_col()
 ```
 
   5. In the `garden_harvest` data, create two new variables: one that makes the varieties lowercase and another that finds the length of the variety name. Arrange the data by vegetable and length of variety name (smallest to largest), with one row for each vegetable variety. HINT: use `str_to_lower()`, `str_length()`, and `distinct()`.
@@ -115,13 +121,15 @@ garden_harvest %>%
 ```{r}
 garden_harvest %>% 
   mutate(lowercase = str_to_lower(variety), name_length = str_length(variety)) %>% 
-  fct_reorder(distinct(name_length))
+  group_by(variety) %>% 
+  arrange(-desc(name_length))
 ```
 
   6. In the `garden_harvest` data, find all distinct vegetable varieties that have "er" or "ar" in their name. HINT: `str_detect()` with an "or" statement (use the | for "or") and `distinct()`.
 
 ```{r}
-
+garden_harvest %>% 
+  mutate(distinct_veg = str_detect(vegetable, "er" |"ar"))
 ```
 
 
